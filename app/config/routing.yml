@@ -1,0 +1,8 @@
+travelbox_mailchimp:
+    resource: "@TravelboxMailchimpBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
