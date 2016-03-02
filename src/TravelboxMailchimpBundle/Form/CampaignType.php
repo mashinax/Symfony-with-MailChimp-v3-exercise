@@ -5,6 +5,7 @@ namespace TravelboxMailchimpBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class CampaignType extends AbstractType
 {
@@ -17,7 +18,7 @@ class CampaignType extends AbstractType
         $builder
             ->add('type')
             ->add('status')
-            ->add('sendTime', 'datetime')
+            ->add('sendTime', DateType::class)
             ->add('subjectLine')
             ->add('title')
             ->add('replyTo')

@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Campaign</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ campaign.id }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ campaign.type }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ campaign.status }}</td>
+            </tr>
+            <tr>
+                <th>Sendtime</th>
+                <td>{% if campaign.sendTime %}{{ campaign.sendTime|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Subjectline</th>
+                <td>{{ campaign.subjectLine }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ campaign.title }}</td>
+            </tr>
+            <tr>
+                <th>Replyto</th>
+                <td>{{ campaign.replyTo }}</td>
+            </tr>
+            <tr>
+                <th>Toname</th>
+                <td>{{ campaign.toName }}</td>
+            </tr>
+            <tr>
+                <th>Fromname</th>
+                <td>{{ campaign.fromName }}</td>
+            </tr>
+            <tr>
+                <th>Apikey</th>
+                <td>{{ campaign.apikey }}</td>
+            </tr>
+            <tr>
+                <th>Listid</th>
+                <td>{{ campaign.listid }}</td>
+            </tr>
+            <tr>
+                <th>Server</th>
+                <td>{{ campaign.server }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('campaign_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('campaign_edit', { 'id': campaign.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

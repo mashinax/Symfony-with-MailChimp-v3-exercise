@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Campaign list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Sendtime</th>
+                <th>Subjectline</th>
+                <th>Title</th>
+                <th>Replyto</th>
+                <th>Toname</th>
+                <th>Fromname</th>
+                <th>Apikey</th>
+                <th>Listid</th>
+                <th>Server</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for campaign in campaigns %}
+            <tr>
+                <td><a href="{{ path('campaign_show', { 'id': campaign.id }) }}">{{ campaign.id }}</a></td>
+                <td>{{ campaign.type }}</td>
+                <td>{{ campaign.status }}</td>
+                <td>{% if campaign.sendTime %}{{ campaign.sendTime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ campaign.subjectLine }}</td>
+                <td>{{ campaign.title }}</td>
+                <td>{{ campaign.replyTo }}</td>
+                <td>{{ campaign.toName }}</td>
+                <td>{{ campaign.fromName }}</td>
+                <td>{{ campaign.apikey }}</td>
+                <td>{{ campaign.listid }}</td>
+                <td>{{ campaign.server }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('campaign_show', { 'id': campaign.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('campaign_edit', { 'id': campaign.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('campaign_new') }}">Create a new MailChimp Campaign</a>
+        </li>
+    </ul>
+{% endblock %}
