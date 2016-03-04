@@ -8,7 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use TravelboxMailchimpBundle\Entity\Campaign;
 use TravelboxMailchimpBundle\Form\CampaignType;
-use TravelboxMailchimpBundle\Resources\mailChimpApi;
+use DrewM\MailChimp\MailChimp;
+//use TravelboxMailchimpBundle\Resources\mailChimpApiNew;
 
 /**
  * Campaign controller.
@@ -47,21 +48,41 @@ class CampaignController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $mc = new mailChimpApi($campaign->getType(), $campaign->getStatus(), $campaign->getSendTime(), $campaign->getSubjectLine(), $campaign->getTitle(), $campaign->getReplyTo(), $campaign->getToName(), $campaign->getFromName());
-            $ms_result = $mc->mcSendData();
-            //$campaign->setStatus($ms_result);
+            $mca = new MailChimp($campaign->getApikey());
+            $mc_result = $mca->post("campaigns",[
+                'recipients'=> ['list_id' => $campaign->getListid()],
+                'type' => 'regular',
+                'settings' => [
+                    'subject_line' => $campaign->getSubjectLine(),
+                    'title' => $campaign->getTitle(),
+                    'reply_to' => $campaign->getReplyTo(),
+                    'from_name' => $campaign->getFromName()
+                ]
+            ]);
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($campaign);
-            $em->flush();
+            if ($mc_result['id']){
+                $mc_content = $mca->put("campaigns/{$mc_result['id']}/content",[
+                    'html' => 'The HTML to use for the saved campaign'
+                ]);
+                $mc_schedule = $mca->post("/campaigns/{$mc_result['id']}/actions/schedule",[
+                    'schedule_time'=> $campaign->getSendTime()->format('Y-m-dTH:i:s')
+                ]);
+            }
 
-            return $this->redirectToRoute('campaign_show', array('id' => $campaign->getId()));
-            //return $this->redirectToRoute('campaign_show', var_dump($ms_result));
+            if ($mc_schedule) {
+                var_dump($mc_schedule);
+            } else {
+                $campaign->setStatus('Success');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($campaign);
+                $em->flush();
+                return $this->redirectToRoute('campaign_show', array('id' => $campaign->getId()));
+            }
         }
 
         return $this->render('campaign/new.html.twig', array(
             'campaign' => $campaign,
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ));
     }
 
